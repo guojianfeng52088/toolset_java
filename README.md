@@ -9,3 +9,4 @@ java常用工具集合
 |外部jar包|版本|地址
 | --- | --- |---|
 |JavaMail|1.5.0|https://mvnrepository.com/artifact/javax.mail/mail/1.5.0-b01
+|lombok|1.18.10|https://projectlombok.org/download
