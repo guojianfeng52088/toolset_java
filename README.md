@@ -13,4 +13,4 @@ java常用工具集合
 #####3.校验类
 |外部jar包|版本|地址|
 |---|---|---|
-|Fastjson|1.2.61|https://github.com//fastjsonalibaba
+|Fastjson|1.2.61|https://github.com/fastjsonalibaba
