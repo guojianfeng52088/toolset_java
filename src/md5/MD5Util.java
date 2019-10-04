@@ -1,4 +1,4 @@
-package MD5;
+package md5;
 
 import java.security.MessageDigest;
 
@@ -19,7 +19,7 @@ public class MD5Util {
       */
     public static String MD5Password(String string) {
         try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
+            MessageDigest md = MessageDigest.getInstance("md5");
             md.update(string.getBytes());
             byte b[] = md.digest();
 
@@ -56,7 +56,7 @@ public class MD5Util {
         try {
             byte[] btInput = string.getBytes();
             // 获得MD5摘要算法的 MessageDigest 对象
-            MessageDigest mdInst = MessageDigest.getInstance("MD5");
+            MessageDigest mdInst = MessageDigest.getInstance("md5");
             // 使用指定的字节更新摘要
             mdInst.update(btInput);
             // 获得密文

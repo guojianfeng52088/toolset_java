@@ -2,7 +2,7 @@ package pay.wechat;
 
 
 
-import MD5.MD5Util;
+import md5.MD5Util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
