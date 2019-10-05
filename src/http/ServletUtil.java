@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 /**
- * @Description Servlet
+ * @Description Servlet请求相关
  * @Author pc
  * @Date 2019/10/05 16:49
  */
@@ -46,5 +48,65 @@ public class ServletUtil {
             returnMap.put(name, value);
         }
         return returnMap;
+    }
+
+
+    /**
+      * @Description 获取请求的IP地址
+      * @Author guojianfeng
+      * @Date 2019/10/05 23:42
+      * @param request request请求对象
+      * @Return
+      */
+    public static String getClientIp(HttpServletRequest request){
+        String ip = request.getHeader("X-Real-IP");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("x-forwarded-for");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        //取第一个ip，为用户的真实ip
+        if (isNotEmpty(ip)) {
+            int index;
+            if ((index = ip.indexOf(",")) != -1) {
+                ip = ip.substring(0, index);
+            }
+        }
+        return ip;
+    }
+
+
+    public static String getIpAddr(HttpServletRequest request) {
+        String ip = request.getHeader("x-forwarded-for");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("http_client_ip");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        // 如果是多级代理，那么取第一个ip为客户ip
+        if (isNotEmpty(ip)) {
+            int index;
+            if ((index = ip.indexOf(",")) != -1) {
+                ip = ip.substring(0, index);
+            }
+        }
+        return ip;
     }
 }
