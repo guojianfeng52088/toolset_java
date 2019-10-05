@@ -1,6 +1,11 @@
-package map;
+package maplist;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -98,5 +103,48 @@ public class MapUtil {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    /**
+     * @description: map转bean
+     * @param
+     * @return
+     * @author: guojianfeng
+     * @date: 2019-10-04 21:31
+     */
+    public static <T> T mapToBean(Class<T> clazz, Map map) {
+        T obj = null;
+        try {
+            BeanInfo beanInfo = Introspector.getBeanInfo(clazz);
+            obj = clazz.newInstance(); // 创建 JavaBean 对象
+            // 给 JavaBean 对象的属性赋值
+            PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+            for (int i = 0; i < propertyDescriptors.length; i++) {
+                PropertyDescriptor descriptor = propertyDescriptors[i];
+                String propertyName = descriptor.getName();
+                if (map.containsKey(propertyName)) {
+                    // 下面一句可以 try 起来，这样当一个属性赋值失败的时候就不会影响其他属性赋值。
+                    Object value = map.get(propertyName);
+                    if ("".equals(value)) {
+                        value = null;
+                    }
+                    Object[] args = new Object[1];
+                    args[0] = value;
+                    descriptor.getWriteMethod().invoke(obj, args);
+                }
+            }
+        } catch (IntrospectionException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return obj;
     }
 }

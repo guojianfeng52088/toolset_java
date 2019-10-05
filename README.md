@@ -18,6 +18,7 @@ java常用工具集合
 |外部jar包|版本|地址|
 |---|---|---|
 |Apache HttpClient|4.5.10|http://www.apache.org/
+|Java Servlet API|4.0.1|https://javaee.github.io/servlet-spec/
 #####5.jwt
 |外部jar包|版本|地址
 |---|---|---|
