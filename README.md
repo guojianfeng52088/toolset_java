@@ -18,3 +18,7 @@ java常用工具集合
 |外部jar包|版本|地址|
 |---|---|---|
 |Apache HttpClient|4.5.10|http://www.apache.org/
+#####5.jwt
+|外部jar包|版本|地址
+|---|---|---|
+|Java JWT|3.8.3|	https://github.com/auth0/java-jwt

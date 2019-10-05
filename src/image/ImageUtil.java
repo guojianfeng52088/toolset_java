@@ -26,7 +26,6 @@ public class ImageUtil {
      * @Return
      */
     public static void zoomImage(String srcImgFilePath, String newImgFilePath, Integer toWidth, Integer toHeight) throws IOException {
-
         // 读入文件
         File _file = new File(srcImgFilePath);
         if (_file.exists()) {
