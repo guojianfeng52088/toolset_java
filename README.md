@@ -14,3 +14,7 @@ java常用工具集合
 |外部jar包|版本|地址|
 |---|---|---|
 |Fastjson|1.2.61|https://github.com/fastjsonalibaba
+#####4.http请求
+|外部jar包|版本|地址|
+|---|---|---|
+|Apache HttpClient|4.5.10|http://www.apache.org/
