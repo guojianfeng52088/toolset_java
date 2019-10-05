@@ -23,3 +23,7 @@ java常用工具集合
 |外部jar包|版本|地址
 |---|---|---|
 |Java JWT|3.8.3|	https://github.com/auth0/java-jwt
+#####6.random
+|外部jar包|版本|地址
+|---|---|---|
+Apache Commons Lang|3.9|http://commons.apache.org/proper/commons-lang/
