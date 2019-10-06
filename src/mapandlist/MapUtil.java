@@ -1,4 +1,4 @@
-package maplist;
+package mapandlist;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -107,9 +107,9 @@ public class MapUtil {
 
 
     /**
-     * @description: map转bean
      * @param
      * @return
+     * @description: map转bean
      * @author: guojianfeng
      * @date: 2019-10-04 21:31
      */

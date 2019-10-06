@@ -1,4 +1,4 @@
-package maplist;
+package mapandlist;
 
 import java.util.List;
 
