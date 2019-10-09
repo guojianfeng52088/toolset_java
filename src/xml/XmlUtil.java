@@ -21,7 +21,6 @@ import java.util.*;
  */
 public class XmlUtil {
 
-
     /**
       * @Description map转xml
       * @Author guojianfeng

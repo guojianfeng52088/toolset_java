@@ -27,3 +27,9 @@ java常用工具集合
 |外部jar包|版本|地址
 |---|---|---|
 Apache Commons Lang|3.9|http://commons.apache.org/proper/commons-lang/
+#####7.spring（以下三个jar包，版本号必须保持一致）
+|外部jar包|版本|地址
+|---|---|---|
+Spring core|5.2.0|https://github.com/spring-projects/spring-framework
+Spring Beans|5.2.0|https://github.com/spring-projects/spring-framework
+Spring Context|5.2.0|https://github.com/spring-projects/spring-framework|
