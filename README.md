@@ -19,10 +19,11 @@ java常用工具集合
 |---|---|---|
 |Apache HttpClient|4.5.10|https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient/4.5.10
 |Java Servlet API|4.0.1|https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api/4.0.1
-#####5.jwt
+#####5.security
 |外部jar包|版本|地址
 |---|---|---|
 |Java JWT|3.8.3|https://mvnrepository.com/artifact/com.auth0/java-jwt/3.8.3
+|Apache Commons Codec|1.13|https://mvnrepository.com/artifact/commons-codec/commons-codec/1.13
 #####6.random
 |外部jar包|版本|地址
 |---|---|---|

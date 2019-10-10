@@ -24,7 +24,6 @@ public class MD5Util {
             byte b[] = md.digest();
 
             int i;
-
             StringBuffer buf = new StringBuffer("");
             for (int offset = 0; offset < b.length; offset++) {
                 i = b[offset];
@@ -37,9 +36,9 @@ public class MD5Util {
             string = buf.toString();
         } catch (Exception e) {
             e.printStackTrace();
-
+        }finally {
+            return string;
         }
-        return string;
     }
 
 
