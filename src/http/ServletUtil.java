@@ -1,7 +1,10 @@
 package http;
 
+import com.alibaba.fastjson.JSONObject;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -51,6 +54,38 @@ public class ServletUtil {
             returnMap.put(name, value);
         }
         return returnMap;
+    }
+
+
+    /**
+    * @description 请求参数为json串格式，通过servlet转为map格式
+    * @param
+    * @return map对象
+    * @author guojianfeng
+    * @date 2019/10/10 18:29
+    */
+    public static Map<Object, Object> getRequestBody(HttpServletRequest request) {
+        try {
+            BufferedReader reader = request.getReader();
+            // body部分
+            String inputLine;
+            String str = "";
+            while ((inputLine = reader.readLine()) != null) {
+                str += inputLine;
+            }
+            reader.close();
+
+            JSONObject paramJson = JSONObject.parseObject(str);
+            Map<Object, Object> param = new HashMap<>();
+
+            for (Object map : paramJson.entrySet()) {
+                param.put(((Map.Entry<Object, Object>) map).getKey(), ((Map.Entry<Object, Object>) map).getValue());
+            }
+            return param;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 
