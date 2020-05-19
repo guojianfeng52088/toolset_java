@@ -3,25 +3,25 @@ package test;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Data implements Serializable {
+public class UptData implements Serializable {
 
-    private int id;  //id
+    private int stationId;  //id
     private Date day; //日期
-    private String location; //名字
-    private double longitude; //经度
-    private double altitude; //维度
+    private double sLat;    //
+    private double sLongitude; //纬度
+    private double sAltitude; //海拔
     private float rain; //降雨量
     private float temperature; //温度
     private float wind;     //风力
     private float rh;       //湿度
 
 
-    public int getId() {
-        return id;
+    public int getStationId() {
+        return stationId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setStationId(int stationId) {
+        this.stationId = stationId;
     }
 
     public Date getDay() {
@@ -32,28 +32,28 @@ public class Data implements Serializable {
         this.day = day;
     }
 
-    public String getLocation() {
-        return location;
+    public double getsLat() {
+        return sLat;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setsLat(double sLat) {
+        this.sLat = sLat;
     }
 
-    public double getLongitude() {
-        return longitude;
+    public double getsLongitude() {
+        return sLongitude;
     }
 
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
+    public void setsLongitude(double sLongitude) {
+        this.sLongitude = sLongitude;
     }
 
-    public double getAltitude() {
-        return altitude;
+    public double getsAltitude() {
+        return sAltitude;
     }
 
-    public void setAltitude(double altitude) {
-        this.altitude = altitude;
+    public void setsAltitude(double sAltitude) {
+        this.sAltitude = sAltitude;
     }
 
     public float getRain() {
