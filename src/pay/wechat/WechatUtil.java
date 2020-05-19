@@ -1,7 +1,5 @@
 package pay.wechat;
 
-
-
 import security.MD5Util;
 
 import java.util.ArrayList;
