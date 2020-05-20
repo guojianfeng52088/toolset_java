@@ -3,7 +3,7 @@ package test;
 import java.io.Serializable;
 import java.util.Date;
 
-public class UptData implements Serializable {
+public class UptInputData implements Serializable {
 
     private int stationId;  //id
     private Date day; //日期

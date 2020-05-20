@@ -8,7 +8,7 @@ import java.util.Date;
  * @Author pc
  * @Date 2020/05/20 01:27
  */
-public class O2Data implements Serializable {
+public class O2InputData implements Serializable {
     private int stationId;  //id
     private Date day; //日期
     private double sLat;    //经度

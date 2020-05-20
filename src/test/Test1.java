@@ -1,34 +1,49 @@
 package test;
 
+import datetime.DateAndTimeUtil;
+
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class Test1 {
 
     public static void main(String[] args) {
 
-        List<UptData> uptDataList = new ArrayList<>();
-        double upt = upt(uptDataList);
+        List<UptInputData> uptInputDataList = new ArrayList<>();
+        initUptInputData(uptInputDataList);
+        List<UptOutputData> uptOutputDataList = upt(uptInputDataList);
+        if (uptInputDataList == null){
 
-        List<O2Data> o2DataList = new ArrayList<>();
-        double o2 = o2(o2DataList);
+        }
+
+        List<O2InputData> o2InputDataList = new ArrayList<>();
+        initO2InputData(o2InputDataList);
+        List<O2OutputData> o2OutputList = o2(o2InputDataList);
     }
-
 
     /**
      * 计算体感温度
      */
-    public static double upt(List<UptData> uptDataList) {
+    public static List<UptOutputData> upt(List<UptInputData> uptInputDataList) {
         double rhc; //黄金分割？
-        int rows = uptDataList.size();
+        int rows = uptInputDataList.size();
+        //input
         List<Float> rain = new ArrayList<>();
         List<Float> temperature = new ArrayList<>();
         List<Float> wind = new ArrayList<>();
         List<Double> rh = new ArrayList<>();
 
-        for (UptData data : uptDataList) {
+        //output
+        List<Double> dtList = new ArrayList<>();
+        List<Double> mctList = new ArrayList<>();
+        List<Double> uptList = new ArrayList<>();
+        List<Integer> degreeList = new ArrayList<>();
+
+        for (UptInputData data : uptInputDataList) {
             rain.add(data.getRain());
             temperature.add(data.getTemperature());
             wind.add(data.getWind());
@@ -37,7 +52,7 @@ public class Test1 {
 
         double upt = 0;
         for (int i = 0; i < rows; i++) {
-            UptData data = uptDataList.get(i);
+            UptInputData data = uptInputDataList.get(i);
             Calendar cal = Calendar.getInstance();
             cal.setTime(data.getDay());
             int month = cal.get(Calendar.MONTH);  //获取月份
@@ -102,52 +117,127 @@ public class Test1 {
                     }
                 }
             }
+            dtList.add(dt);
+            mctList.add(mct);
+            upt = new BigDecimal(upt).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+            uptList.add(upt);
+            degreeList.add(degree);
         }
 
-        upt = new BigDecimal(upt).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-        upt = pd.DataFrame(c_[22.7 - mct, mct, upt, degree],columns = ['dt', 'mct', 'upt', 'degree']);
-        return upt;
+        List<UptOutputData> outputDataList = new ArrayList<>();
+        for (int i = 0; i<rows;i++){
+            UptInputData inputData = uptInputDataList.get(i);
+            UptOutputData outputData = new UptOutputData();
+            outputData.setStationId(inputData.getStationId());
+            outputData.setDay(inputData.getDay());
+            outputData.setsLat(inputData.getsLat());
+            outputData.setsLongitude(inputData.getsLongitude());
+            outputData.setsAltitude(inputData.getsAltitude());
+            outputData.setRain(inputData.getRain());
+            outputData.setTemperature(inputData.getTemperature());
+            outputData.setWind(inputData.getWind());
+            outputData.setRh(inputData.getRh());
+            outputData.setDt(dtList.get(i));
+            outputData.setMct(mctList.get(i));
+            outputData.setUpt(uptList.get(i));
+            outputData.setDegree(degreeList.get(i));
+
+            outputDataList.add(outputData);
+        }
+
+        return outputDataList;
     }
 
     /**
      * 计算含氧量
      */
-    public static double o2(List<O2Data> o2DataList) {
+    public static List<O2OutputData> o2(List<O2InputData> o2InputDataList) {
         int N = 32;
         double p2 = 101.325;
         float t0 = 273.15F;
         double ppm = 0.20948; // #round_((O2p_rh / p1) , 2) #氧气的体积分数
         double O2_threhold[] = {15.70, 14.95, 14.34, 13.60, 12.12, 11.52};
         int dg = 1;
-        int rows = o2DataList.size();
-        double degree = 0;
+        int rows = o2InputDataList.size();
         List<Float> p1 = new ArrayList<>();
         List<Float> tav = new ArrayList<>();
         List<Double> rhav = new ArrayList<>();
 
         List<Double> o2p = new ArrayList<>();
+        List<Integer> degree = new ArrayList<>();
         List<Double> o2c1 = new ArrayList<>();
 
-        for (O2Data o2Data : o2DataList) {
-            p1.add(o2Data.getPressure());
-            tav.add(o2Data.getTemperature() + t0);
-            rhav.add(o2Data.getRh() * 0.01);
+        for (O2InputData o2InputData : o2InputDataList) {
+            p1.add(o2InputData.getPressure());
+            tav.add(o2InputData.getTemperature() + t0);
+            rhav.add(o2InputData.getRh() * 0.01);
 
-            o2p.add(o2Data.getPressure() * 0.1 * ppm);
-            o2c1.add(0.8062 * o2Data.getPressure() * 100 / (o2Data.getTemperature() + t0));
+            o2p.add(o2InputData.getPressure() * 0.1 * ppm);
+            o2c1.add(0.8062 * o2InputData.getPressure() * 100 / (o2InputData.getTemperature() + t0));
         }
 
-        for (int i = 0; i<o2DataList.size(); i++){
+        for (int i = 0; i< o2InputDataList.size(); i++){
             for (int j = 0; j < 6;j++){
                 if ((o2p.get(i) < O2_threhold[j]) && o2p.get(i) > O2_threhold[j+1]){
-                    degree = j+1;
+                    degree.add(j+1);
+                }else {
+                    degree.add(0);
                 }
             }
         }
 
-        O2_result = pd.DataFrame(c_[O2p,degree,O2c1],columns=['O2_pre','O2p_dg','O2_con'])
-        O2_result = pd.concat([O2_data.iloc[:,:5],O2_result],axis=1)
-        return(O2_result)
+        List<O2OutputData> outputDataList = new ArrayList<>();
+
+        for (int i = 0; i<o2InputDataList.size(); i++){
+            O2InputData o2InputData = o2InputDataList.get(i);
+            O2OutputData outputData = new O2OutputData();
+            outputData.setStationId(o2InputData.getStationId());
+            outputData.setDay(o2InputData.getDay());
+            outputData.setsLat(o2InputData.getsLat());
+            outputData.setsLongitude(o2InputData.getsLongitude());
+            outputData.setsAltitude(o2InputData.getsAltitude());
+            outputData.setO2_pre(o2p.get(i));
+            outputData.setO2p_dg(degree.get(i));
+            outputData.setO2_con(o2c1.get(i));
+
+            outputDataList.add(outputData);
+        }
+        return outputDataList;
+    }
+
+
+    public static List<UptInputData> initUptInputData(List<UptInputData> list){
+        UptInputData inputData1 = new UptInputData();
+        inputData1.setStationId(55248);
+        inputData1.setDay(new Date());
+        inputData1.setsLat(2865);
+        inputData1.setsLongitude(9747);
+        inputData1.setsAltitude(2327.6);
+        inputData1.setRain(0);
+        inputData1.setTemperature(-12.6F);
+        inputData1.setWind(2.4F);
+        inputData1.setRh(17.3F);
+
+
+        UptInputData inputData2 = new UptInputData();
+        inputData2.setStationId(55248);
+        inputData2.setDay(new Date());
+        inputData2.setsLat(3215);
+        inputData2.setsLongitude(8442);
+        inputData2.setsAltitude(4414.9);
+        inputData2.setRain(22.8F);
+        inputData2.setTemperature(8.8F);
+        inputData2.setWind(3.8F);
+        inputData2.setRh(20.8F);
+
+        list.add(inputData1);
+        list.add(inputData2);
+        return list;
+    }
+
+    public static List<O2InputData> initO2InputData(List<O2InputData> list){
+
+        return null;
     }
 
 }
