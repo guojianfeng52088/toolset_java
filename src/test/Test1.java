@@ -1,9 +1,12 @@
 package test;
 
-import datetime.DateAndTimeUtil;
+import com.alibaba.excel.EasyExcel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,16 +16,42 @@ public class Test1 {
 
     public static void main(String[] args) {
 
-        List<UptInputData> uptInputDataList = new ArrayList<>();
-        initUptInputData(uptInputDataList);
-        List<UptOutputData> uptOutputDataList = upt(uptInputDataList);
-        if (uptInputDataList == null){
+        try {
 
+            String station = "D:\\java程序\\测试文件\\西藏station.xlsx";
+            String tibet = "D:\\java程序\\测试文件\\tibet_data.xlsx";
+            List<Tibet> tList = EasyExcel.read(tibet, Tibet.class, new DemoExceptionListener()).sheet().doReadSync();
+//            List<Station> sList = EasyExcel.read(station, Station.class, new DemoExceptionListener()).sheet().doReadSync();
+
+            if ( tList == null) {
+
+            }
+
+
+            InputStream stationStream = new FileInputStream("D:\\java程序\\测试文件\\西藏station.xlsx");
+            InputStream inputStream = new FileInputStream("D:\\java程序\\测试文件\\tibet_data.xlsx");
+
+            List<Station> stationList = EasyExcel.read(stationStream).head(Station.class).sheet().doReadSync();   //读取station
+            List<Tibet> tibetList = EasyExcel.read(inputStream).head(Tibet.class).sheet().doReadSync(); //读取Tibet文件
+
+
+            if (stationList == null || tibetList == null) {
+
+            }
+
+
+//            List<UptOutputData> uptOutputDataList = upt(uptInputDataList);
+//            if (uptInputDataList == null){
+//
+//            }
+
+            List<O2InputData> o2InputDataList = EasyExcel.read(inputStream).head(O2InputData.class).sheet().doReadSync();
+            List<O2OutputData> o2OutputList = o2(o2InputDataList);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        List<O2InputData> o2InputDataList = new ArrayList<>();
-        initO2InputData(o2InputDataList);
-        List<O2OutputData> o2OutputList = o2(o2InputDataList);
+
     }
 
     /**
@@ -125,7 +154,7 @@ public class Test1 {
         }
 
         List<UptOutputData> outputDataList = new ArrayList<>();
-        for (int i = 0; i<rows;i++){
+        for (int i = 0; i < rows; i++) {
             UptInputData inputData = uptInputDataList.get(i);
             UptOutputData outputData = new UptOutputData();
             outputData.setStationId(inputData.getStationId());
@@ -176,11 +205,11 @@ public class Test1 {
             o2c1.add(0.8062 * o2InputData.getPressure() * 100 / (o2InputData.getTemperature() + t0));
         }
 
-        for (int i = 0; i< o2InputDataList.size(); i++){
-            for (int j = 0; j < 6;j++){
-                if ((o2p.get(i) < O2_threhold[j]) && o2p.get(i) > O2_threhold[j+1]){
-                    degree.add(j+1);
-                }else {
+        for (int i = 0; i < o2InputDataList.size(); i++) {
+            for (int j = 0; j < 6; j++) {
+                if ((o2p.get(i) < O2_threhold[j]) && o2p.get(i) > O2_threhold[j + 1]) {
+                    degree.add(j + 1);
+                } else {
                     degree.add(0);
                 }
             }
@@ -188,7 +217,7 @@ public class Test1 {
 
         List<O2OutputData> outputDataList = new ArrayList<>();
 
-        for (int i = 0; i<o2InputDataList.size(); i++){
+        for (int i = 0; i < o2InputDataList.size(); i++) {
             O2InputData o2InputData = o2InputDataList.get(i);
             O2OutputData outputData = new O2OutputData();
             outputData.setStationId(o2InputData.getStationId());
@@ -206,7 +235,7 @@ public class Test1 {
     }
 
 
-    public static List<UptInputData> initUptInputData(List<UptInputData> list){
+    public static List<UptInputData> initUptInputData(List<UptInputData> list) {
         UptInputData inputData1 = new UptInputData();
         inputData1.setStationId(55248);
         inputData1.setDay(new Date());
@@ -235,7 +264,7 @@ public class Test1 {
         return list;
     }
 
-    public static List<O2InputData> initO2InputData(List<O2InputData> list){
+    public static List<O2InputData> initO2InputData(List<O2InputData> list) {
 
         return null;
     }
