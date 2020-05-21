@@ -10,11 +10,11 @@ import java.util.Date;
 public class Tibet {
     private int stationId;
     private String day;
-    private String Rain;
-    private String Pressure;
-    private String Wind;
-    private String Temperature;
-    private String ShuiQY;
+    private String rain;
+    private String pressure;
+    private String wind;
+    private String temperature;
+    private String shuiQY;
     private String RH;
 
     public int getStationId() {
@@ -34,43 +34,43 @@ public class Tibet {
     }
 
     public String getRain() {
-        return Rain;
+        return rain;
     }
 
     public void setRain(String rain) {
-        Rain = rain;
+        this.rain = rain;
     }
 
     public String getPressure() {
-        return Pressure;
+        return pressure;
     }
 
     public void setPressure(String pressure) {
-        Pressure = pressure;
+        this.pressure = pressure;
     }
 
     public String getWind() {
-        return Wind;
+        return wind;
     }
 
     public void setWind(String wind) {
-        Wind = wind;
+        this.wind = wind;
     }
 
     public String getTemperature() {
-        return Temperature;
+        return temperature;
     }
 
     public void setTemperature(String temperature) {
-        Temperature = temperature;
+        this.temperature = temperature;
     }
 
     public String getShuiQY() {
-        return ShuiQY;
+        return shuiQY;
     }
 
     public void setShuiQY(String shuiQY) {
-        ShuiQY = shuiQY;
+        this.shuiQY = shuiQY;
     }
 
     public String getRH() {

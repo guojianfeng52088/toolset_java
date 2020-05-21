@@ -19,11 +19,11 @@ public class Test1 {
         try {
 
             String station = "D:\\java程序\\测试文件\\西藏station.xlsx";
-            String tibet = "D:\\java程序\\测试文件\\tibet_data.xlsx";
+            String tibet = "D:\\java程序\\测试文件\\新建 XLSX 工作表.xlsx";
             List<Tibet> tList = EasyExcel.read(tibet, Tibet.class, new DemoExceptionListener()).sheet().doReadSync();
 //            List<Station> sList = EasyExcel.read(station, Station.class, new DemoExceptionListener()).sheet().doReadSync();
 
-            if ( tList == null) {
+            if (tList == null) {
 
             }
 
