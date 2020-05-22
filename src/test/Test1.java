@@ -1,15 +1,12 @@
 package test;
 
 import com.alibaba.excel.EasyExcel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.FileOutputStream;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class Test1 {
@@ -17,36 +14,73 @@ public class Test1 {
     public static void main(String[] args) {
 
         try {
+            //读取的文件位置
+            String stationInput = "D:\\test\\西藏station.xlsx";
+            String tibetInput = "D:\\test\\tibet_data.xlsx";
 
-            String station = "D:\\java程序\\测试文件\\西藏station.xlsx";
-            String tibet = "D:\\java程序\\测试文件\\新建 XLSX 工作表.xlsx";
-            List<Tibet> tList = EasyExcel.read(tibet, Tibet.class, new DemoExceptionListener()).sheet().doReadSync();
-//            List<Station> sList = EasyExcel.read(station, Station.class, new DemoExceptionListener()).sheet().doReadSync();
+            //输出的文件位置
+            String uptOutput = "D:\\test\\uptOuput.xlsx";
+            String o2Output = "D:\\test\\o2Ouput.xlsx";
 
-            if (tList == null) {
+            //读取excel
+            List<Station> stationList = EasyExcel.read(stationInput, Station.class, new StationExceptionListener()).sheet().doReadSync();
+            List<Tibet> tibetList = EasyExcel.read(tibetInput, Tibet.class, new TibetExceptionListener()).sheet().doReadSync();
 
+            //存放输出的数据
+            List<UptInputData> uptInputDataList = new ArrayList<>();
+            List<O2InputData> o2InputDataList = new ArrayList<>();
+
+            //构造数据
+            if (stationList != null && tibetList != null) {
+                for (Tibet t : tibetList){
+                    if (t.isContainNull()){
+                        continue;
+                    }
+                    int stationId = t.getStationId();
+                    for (Station s : stationList){
+                        if (stationId == s.getStationId()){
+                            UptInputData uptInputData = new UptInputData();
+                            uptInputData.setStationId(stationId);
+                            uptInputData.setDay(t.getDay());
+                            uptInputData.setsLat(s.getsLat());
+                            uptInputData.setsLongitude(s.getsLongitude());
+                            uptInputData.setsAltitude(s.getsAltitude());
+                            uptInputData.setRain(t.getRain());
+                            uptInputData.setTemperature(t.getTemperature());
+                            uptInputData.setWind(t.getWind());
+                            uptInputData.setRh(t.getRH());
+
+                            O2InputData o2InputData = new O2InputData();
+                            o2InputData.setStationId(stationId);
+                            o2InputData.setDay(t.getDay());
+                            o2InputData.setsLat(s.getsLat());
+                            o2InputData.setsLongitude(s.getsLongitude());
+                            o2InputData.setsAltitude(s.getsAltitude());
+                            o2InputData.setPressure(t.getPressure());
+                            o2InputData.setTemperature(t.getTemperature());
+                            o2InputData.setRh(t.getRH());
+
+                            o2InputDataList.add(o2InputData);
+                            uptInputDataList.add(uptInputData);
+                            break;
+                        }
+                    }
+                }
             }
-
-
-            InputStream stationStream = new FileInputStream("D:\\java程序\\测试文件\\西藏station.xlsx");
-            InputStream inputStream = new FileInputStream("D:\\java程序\\测试文件\\tibet_data.xlsx");
-
-            List<Station> stationList = EasyExcel.read(stationStream).head(Station.class).sheet().doReadSync();   //读取station
-            List<Tibet> tibetList = EasyExcel.read(inputStream).head(Tibet.class).sheet().doReadSync(); //读取Tibet文件
-
-
-            if (stationList == null || tibetList == null) {
-
+            if (uptInputDataList != null){
+                //计算upt
+                List<UptOutputData> uptOutputDataList = upt(uptInputDataList);
+                //开始写upt数据的excel
+                FileOutputStream fileOutputStream = new FileOutputStream(uptOutput);
+                EasyExcel.write(fileOutputStream, UptOutputData.class).sheet("sheet").doWrite(uptOutputDataList);
             }
-
-
-//            List<UptOutputData> uptOutputDataList = upt(uptInputDataList);
-//            if (uptInputDataList == null){
-//
-//            }
-
-            List<O2InputData> o2InputDataList = EasyExcel.read(inputStream).head(O2InputData.class).sheet().doReadSync();
-            List<O2OutputData> o2OutputList = o2(o2InputDataList);
+            if (o2InputDataList != null){
+                //计算o2
+                List<O2OutputData> o2OutputList = o2(o2InputDataList);
+                //开始写o2数据的excel
+                FileOutputStream fileOutputStream = new FileOutputStream(o2Output);
+                EasyExcel.write(fileOutputStream, O2OutputData.class).sheet("sheet").doWrite(o2OutputList);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -58,6 +92,8 @@ public class Test1 {
      * 计算体感温度
      */
     public static List<UptOutputData> upt(List<UptInputData> uptInputDataList) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+
         double rhc; //黄金分割？
         int rows = uptInputDataList.size();
         //input
@@ -73,18 +109,23 @@ public class Test1 {
         List<Integer> degreeList = new ArrayList<>();
 
         for (UptInputData data : uptInputDataList) {
-            rain.add(data.getRain());
-            temperature.add(data.getTemperature());
-            wind.add(data.getWind());
-            rh.add(data.getRh() * 0.01);
+            rain.add(Float.valueOf(data.getRain()));
+            temperature.add(Float.valueOf(data.getTemperature()));
+            wind.add(Float.valueOf(data.getWind()));
+            rh.add(Double.valueOf(data.getRh()) * 0.01);
         }
 
         double upt = 0;
         for (int i = 0; i < rows; i++) {
             UptInputData data = uptInputDataList.get(i);
             Calendar cal = Calendar.getInstance();
-            cal.setTime(data.getDay());
-            int month = cal.get(Calendar.MONTH);  //获取月份
+            int month;
+            try {
+                cal.setTime(sdf.parse(data.getDay()));
+                month = cal.get(Calendar.MONTH);  //获取月份
+            }catch (Exception e){
+                month = 0;
+            }
             double longitude = data.getsLongitude() * 0.01; //纬度 × 0.01；
             double altitude = data.getsAltitude();       //海拔
 
@@ -148,11 +189,16 @@ public class Test1 {
             }
             dtList.add(dt);
             mctList.add(mct);
-            upt = new BigDecimal(upt).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+            try {
+                upt = new BigDecimal(upt).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+            }catch (Exception e){
+                upt = 0;
+            }
             uptList.add(upt);
             degreeList.add(degree);
         }
 
+        //构造upt输出数据
         List<UptOutputData> outputDataList = new ArrayList<>();
         for (int i = 0; i < rows; i++) {
             UptInputData inputData = uptInputDataList.get(i);
@@ -197,12 +243,12 @@ public class Test1 {
         List<Double> o2c1 = new ArrayList<>();
 
         for (O2InputData o2InputData : o2InputDataList) {
-            p1.add(o2InputData.getPressure());
-            tav.add(o2InputData.getTemperature() + t0);
-            rhav.add(o2InputData.getRh() * 0.01);
+            p1.add(Float.valueOf(o2InputData.getPressure()));
+            tav.add(Float.valueOf(o2InputData.getTemperature()) + t0);
+            rhav.add(Double.valueOf(o2InputData.getRh()) * 0.01);
 
-            o2p.add(o2InputData.getPressure() * 0.1 * ppm);
-            o2c1.add(0.8062 * o2InputData.getPressure() * 100 / (o2InputData.getTemperature() + t0));
+            o2p.add(Double.valueOf(o2InputData.getPressure()) * 0.1 * ppm);
+            o2c1.add(0.8062 * Double.valueOf(o2InputData.getPressure()) * 100 / (Double.valueOf(o2InputData.getTemperature()) + t0));
         }
 
         for (int i = 0; i < o2InputDataList.size(); i++) {
@@ -217,6 +263,7 @@ public class Test1 {
 
         List<O2OutputData> outputDataList = new ArrayList<>();
 
+        //构造o2输出数据
         for (int i = 0; i < o2InputDataList.size(); i++) {
             O2InputData o2InputData = o2InputDataList.get(i);
             O2OutputData outputData = new O2OutputData();
@@ -225,6 +272,9 @@ public class Test1 {
             outputData.setsLat(o2InputData.getsLat());
             outputData.setsLongitude(o2InputData.getsLongitude());
             outputData.setsAltitude(o2InputData.getsAltitude());
+            outputData.setPressure(o2InputData.getPressure());
+            outputData.setTemperature(o2InputData.getTemperature());
+            outputData.setRh(o2InputData.getRh());
             outputData.setO2_pre(o2p.get(i));
             outputData.setO2p_dg(degree.get(i));
             outputData.setO2_con(o2c1.get(i));
@@ -233,40 +283,4 @@ public class Test1 {
         }
         return outputDataList;
     }
-
-
-    public static List<UptInputData> initUptInputData(List<UptInputData> list) {
-        UptInputData inputData1 = new UptInputData();
-        inputData1.setStationId(55248);
-        inputData1.setDay(new Date());
-        inputData1.setsLat(2865);
-        inputData1.setsLongitude(9747);
-        inputData1.setsAltitude(2327.6);
-        inputData1.setRain(0);
-        inputData1.setTemperature(-12.6F);
-        inputData1.setWind(2.4F);
-        inputData1.setRh(17.3F);
-
-
-        UptInputData inputData2 = new UptInputData();
-        inputData2.setStationId(55248);
-        inputData2.setDay(new Date());
-        inputData2.setsLat(3215);
-        inputData2.setsLongitude(8442);
-        inputData2.setsAltitude(4414.9);
-        inputData2.setRain(22.8F);
-        inputData2.setTemperature(8.8F);
-        inputData2.setWind(3.8F);
-        inputData2.setRh(20.8F);
-
-        list.add(inputData1);
-        list.add(inputData2);
-        return list;
-    }
-
-    public static List<O2InputData> initO2InputData(List<O2InputData> list) {
-
-        return null;
-    }
-
 }

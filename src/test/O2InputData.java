@@ -1,7 +1,6 @@
 package test;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * @Description TODO
@@ -10,13 +9,13 @@ import java.util.Date;
  */
 public class O2InputData implements Serializable {
     private int stationId;  //id
-    private Date day; //日期
+    private String day; //日期
     private double sLat;    //经度
     private double sLongitude; //纬度
     private double sAltitude; //海拔
-    private float pressure; //气压
-    private float temperature; //温度
-    private float rh;       //湿度
+    private String pressure; //气压
+    private String temperature; //温度
+    private String rh;       //湿度
 
     public int getStationId() {
         return stationId;
@@ -26,11 +25,11 @@ public class O2InputData implements Serializable {
         this.stationId = stationId;
     }
 
-    public Date getDay() {
+    public String getDay() {
         return day;
     }
 
-    public void setDay(Date day) {
+    public void setDay(String day) {
         this.day = day;
     }
 
@@ -58,27 +57,27 @@ public class O2InputData implements Serializable {
         this.sAltitude = sAltitude;
     }
 
-    public float getPressure() {
+    public String getPressure() {
         return pressure;
     }
 
-    public void setPressure(float pressure) {
+    public void setPressure(String pressure) {
         this.pressure = pressure;
     }
 
-    public float getTemperature() {
+    public String getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(float temperature) {
+    public void setTemperature(String temperature) {
         this.temperature = temperature;
     }
 
-    public float getRh() {
+    public String getRh() {
         return rh;
     }
 
-    public void setRh(float rh) {
+    public void setRh(String rh) {
         this.rh = rh;
     }
 }

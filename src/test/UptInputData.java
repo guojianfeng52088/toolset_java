@@ -6,14 +6,14 @@ import java.util.Date;
 public class UptInputData implements Serializable {
 
     private int stationId;  //id
-    private Date day; //日期
+    private String day; //日期
     private double sLat;    //
     private double sLongitude; //纬度
     private double sAltitude; //海拔
-    private float rain; //降雨量
-    private float temperature; //温度
-    private float wind;     //风力
-    private float rh;       //湿度
+    private String rain; //降雨量
+    private String temperature; //温度
+    private String wind;     //风力
+    private String rh;       //湿度
 
 
     public int getStationId() {
@@ -24,11 +24,11 @@ public class UptInputData implements Serializable {
         this.stationId = stationId;
     }
 
-    public Date getDay() {
+    public String getDay() {
         return day;
     }
 
-    public void setDay(Date day) {
+    public void setDay(String day) {
         this.day = day;
     }
 
@@ -56,35 +56,35 @@ public class UptInputData implements Serializable {
         this.sAltitude = sAltitude;
     }
 
-    public float getRain() {
+    public String getRain() {
         return rain;
     }
 
-    public void setRain(float rain) {
+    public void setRain(String rain) {
         this.rain = rain;
     }
 
-    public float getTemperature() {
+    public String getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(float temperature) {
+    public void setTemperature(String temperature) {
         this.temperature = temperature;
     }
 
-    public float getWind() {
+    public String getWind() {
         return wind;
     }
 
-    public void setWind(float wind) {
+    public void setWind(String wind) {
         this.wind = wind;
     }
 
-    public float getRh() {
+    public String getRh() {
         return rh;
     }
 
-    public void setRh(float rh) {
+    public void setRh(String rh) {
         this.rh = rh;
     }
 }
